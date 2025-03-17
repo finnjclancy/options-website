@@ -32,7 +32,7 @@ An interactive educational website for learning options trading concepts, from b
 
 1. Clone the repository
    ```
-   git clone https://github.com/finnjclancy/option-educational-course.git
+   git clone https://github.com/finnjclancy/options-website.git
    cd option-educational-course
    ```
 
@@ -60,4 +60,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Special thanks to all contributors and options trading experts who provided feedback
+- Special thanks to all contributors and options trading experts (youtubers) who helped put this together
