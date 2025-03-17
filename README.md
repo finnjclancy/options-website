@@ -64,7 +64,7 @@ This project is configured for GitHub Pages deployment using GitHub Actions.
    - Under "Build and deployment", select "GitHub Actions" as the source
    - The site will be automatically deployed when you push to the main branch
 
-3. Your site will be available at: `https://[your-username].github.io/options-website-1/`
+3. Your site will be available at: `https://[your-username].github.io/options-website/`
 
 ## Built With
 
