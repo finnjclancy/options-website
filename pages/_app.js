@@ -2,10 +2,34 @@ import '../styles/global.css';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const currentPath = router.pathname;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if the viewport is mobile-sized
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [router.pathname]);
 
   const isActive = (path) => {
     // Handle both the main page and its recap
@@ -21,6 +45,60 @@ export default function MyApp({ Component, pageProps }) {
     padding: '0.5rem',
     borderRadius: '4px',
   });
+
+  // Hamburger menu button style
+  const hamburgerStyle = {
+    display: isMobile ? 'flex' : 'none',
+    position: 'fixed',
+    top: '1rem',
+    left: '1rem',
+    zIndex: 1000,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    width: '2rem',
+    height: '2rem',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0
+  };
+
+  // Sidebar style based on mobile and menu state
+  const sidebarStyle = {
+    width: '280px',
+    backgroundColor: '#f8f9fa',
+    padding: '2rem 1.5rem',
+    borderRight: '1px solid #e0e0e0',
+    position: 'fixed',
+    height: '100vh',
+    overflowY: 'auto',
+    zIndex: 999,
+    left: isMobile ? (menuOpen ? '0' : '-280px') : '0',
+    transition: 'left 0.3s ease-in-out',
+    paddingTop: isMobile ? '4rem' : '2rem',
+  };
+
+  // Content area style based on mobile
+  const contentStyle = {
+    flex: 1,
+    marginLeft: isMobile ? '0' : '280px',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    transition: 'margin-left 0.3s ease-in-out',
+  };
+
+  // Overlay for mobile when menu is open
+  const overlayStyle = {
+    display: isMobile && menuOpen ? 'block' : 'none',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 998,
+  };
 
   return (
     <div style={{ 
@@ -49,16 +127,47 @@ export default function MyApp({ Component, pageProps }) {
         strategy="beforeInteractive"
       />
 
+      {/* Hamburger Menu Button for Mobile */}
+      <button 
+        style={hamburgerStyle} 
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        <span style={{
+          width: '2rem',
+          height: '0.25rem',
+          background: '#333',
+          borderRadius: '10px',
+          transition: 'all 0.3s linear',
+          transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'rotate(0)'
+        }}></span>
+        <span style={{
+          width: '2rem',
+          height: '0.25rem',
+          background: '#333',
+          borderRadius: '10px',
+          transition: 'all 0.3s linear',
+          opacity: menuOpen ? '0' : '1',
+          transform: menuOpen ? 'translateX(20px)' : 'translateX(0)'
+        }}></span>
+        <span style={{
+          width: '2rem',
+          height: '0.25rem',
+          background: '#333',
+          borderRadius: '10px',
+          transition: 'all 0.3s linear',
+          transform: menuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'rotate(0)'
+        }}></span>
+      </button>
+
+      {/* Background Overlay (Mobile Only) */}
+      <div 
+        style={overlayStyle}
+        onClick={() => setMenuOpen(false)}
+      />
+
       {/* Sidebar Navigation */}
-      <div style={{
-        width: '280px',
-        backgroundColor: '#f8f9fa',
-        padding: '2rem 1.5rem',
-        borderRight: '1px solid #e0e0e0',
-        position: 'fixed',
-        height: '100vh',
-        overflowY: 'auto'
-      }}>
+      <div style={sidebarStyle}>
         <Link href="/" style={{ 
           textDecoration: 'none', 
           color: 'inherit',
@@ -172,13 +281,7 @@ export default function MyApp({ Component, pageProps }) {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ 
-        flex: 1,
-        marginLeft: '280px',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-      }}>
+      <div style={contentStyle}>
         <main style={{ 
           flex: '1 0 auto',
           padding: '2rem',
