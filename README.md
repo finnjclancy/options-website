@@ -4,6 +4,8 @@ Link to site - https://options-website-three.vercel.app/
 
 An interactive educational website for learning options trading concepts, from beginner to expert level.
 
+Made this because my friends would ask me about how options work.
+
 ## Features
 
 - Comprehensive curriculum covering options basics to advanced strategies
